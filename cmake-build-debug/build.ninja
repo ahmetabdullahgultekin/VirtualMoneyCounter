@@ -49,33 +49,33 @@ cmake_ninja_workdir = C$:\Users\Lenovo\CLionProjects\VirtualMoneyCounter\cmake-b
 
 build cmake_object_order_depends_target_VirtualMoneyCounter: phony || .
 
-build CMakeFiles\VirtualMoneyCounter.dir\Main.cpp.obj.ddi: CXX_SCAN__VirtualMoneyCounter_Debug C$:\Users\Lenovo\CLionProjects\VirtualMoneyCounter\Main.cpp || cmake_object_order_depends_target_VirtualMoneyCounter
-  DEP_FILE = CMakeFiles\VirtualMoneyCounter.dir\Main.cpp.obj.ddi.d
-  DYNDEP_INTERMEDIATE_FILE = CMakeFiles\VirtualMoneyCounter.dir\Main.cpp.obj.ddi
+build CMakeFiles\VirtualMoneyCounter.dir\src\Main.cpp.obj.ddi: CXX_SCAN__VirtualMoneyCounter_Debug C$:\Users\Lenovo\CLionProjects\VirtualMoneyCounter\src\Main.cpp || cmake_object_order_depends_target_VirtualMoneyCounter
+  DEP_FILE = CMakeFiles\VirtualMoneyCounter.dir\src\Main.cpp.obj.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles\VirtualMoneyCounter.dir\src\Main.cpp.obj.ddi
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++latest -MDd -Zi
   INCLUDES = -external:IA:\opencv\build\include -external:W0
-  OBJ_FILE = CMakeFiles\VirtualMoneyCounter.dir\Main.cpp.obj
-  PREPROCESSED_OUTPUT_FILE = CMakeFiles\VirtualMoneyCounter.dir\Main.cpp.obj.ddi.i
+  OBJ_FILE = CMakeFiles\VirtualMoneyCounter.dir\src\Main.cpp.obj
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles\VirtualMoneyCounter.dir\src\Main.cpp.obj.ddi.i
 
-build CMakeFiles\VirtualMoneyCounter.dir\Main.cpp.obj: CXX_COMPILER__VirtualMoneyCounter_scanned_Debug C$:\Users\Lenovo\CLionProjects\VirtualMoneyCounter\Main.cpp | CMakeFiles\VirtualMoneyCounter.dir\Main.cpp.obj.modmap || cmake_object_order_depends_target_VirtualMoneyCounter CMakeFiles\VirtualMoneyCounter.dir\CXX.dd
-  DYNDEP_MODULE_MAP_FILE = CMakeFiles\VirtualMoneyCounter.dir\Main.cpp.obj.modmap
+build CMakeFiles\VirtualMoneyCounter.dir\src\Main.cpp.obj: CXX_COMPILER__VirtualMoneyCounter_scanned_Debug C$:\Users\Lenovo\CLionProjects\VirtualMoneyCounter\src\Main.cpp | CMakeFiles\VirtualMoneyCounter.dir\src\Main.cpp.obj.modmap || cmake_object_order_depends_target_VirtualMoneyCounter CMakeFiles\VirtualMoneyCounter.dir\CXX.dd
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles\VirtualMoneyCounter.dir\src\Main.cpp.obj.modmap
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++latest -MDd -Zi
   INCLUDES = -external:IA:\opencv\build\include -external:W0
   OBJECT_DIR = CMakeFiles\VirtualMoneyCounter.dir
-  OBJECT_FILE_DIR = CMakeFiles\VirtualMoneyCounter.dir
+  OBJECT_FILE_DIR = CMakeFiles\VirtualMoneyCounter.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\VirtualMoneyCounter.dir\
   TARGET_PDB = VirtualMoneyCounter.pdb
   dyndep = CMakeFiles/VirtualMoneyCounter.dir/CXX.dd
 
-build CMakeFiles\VirtualMoneyCounter.dir\vc.c.obj: C_COMPILER__VirtualMoneyCounter_unscanned_Debug C$:\Users\Lenovo\CLionProjects\VirtualMoneyCounter\vc.c || cmake_object_order_depends_target_VirtualMoneyCounter
+build CMakeFiles\VirtualMoneyCounter.dir\src\vc.c.obj: C_COMPILER__VirtualMoneyCounter_unscanned_Debug C$:\Users\Lenovo\CLionProjects\VirtualMoneyCounter\src\vc.c || cmake_object_order_depends_target_VirtualMoneyCounter
   FLAGS = /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -std:c17 -MDd -Zi
   INCLUDES = -external:IA:\opencv\build\include -external:W0
   OBJECT_DIR = CMakeFiles\VirtualMoneyCounter.dir
-  OBJECT_FILE_DIR = CMakeFiles\VirtualMoneyCounter.dir
+  OBJECT_FILE_DIR = CMakeFiles\VirtualMoneyCounter.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\VirtualMoneyCounter.dir\
   TARGET_PDB = VirtualMoneyCounter.pdb
 
-build CMakeFiles\VirtualMoneyCounter.dir\CXX.dd | C$:\Users\Lenovo\CLionProjects\VirtualMoneyCounter\cmake-build-debug\CMakeFiles\VirtualMoneyCounter.dir\CXXModules.json CMakeFiles\VirtualMoneyCounter.dir\Main.cpp.obj.modmap: CXX_DYNDEP__VirtualMoneyCounter_Debug CMakeFiles\VirtualMoneyCounter.dir\Main.cpp.obj.ddi | C$:\Users\Lenovo\CLionProjects\VirtualMoneyCounter\cmake-build-debug\CMakeFiles\VirtualMoneyCounter.dir\CXXDependInfo.json
+build CMakeFiles\VirtualMoneyCounter.dir\CXX.dd | C$:\Users\Lenovo\CLionProjects\VirtualMoneyCounter\cmake-build-debug\CMakeFiles\VirtualMoneyCounter.dir\CXXModules.json CMakeFiles\VirtualMoneyCounter.dir\src\Main.cpp.obj.modmap: CXX_DYNDEP__VirtualMoneyCounter_Debug CMakeFiles\VirtualMoneyCounter.dir\src\Main.cpp.obj.ddi | C$:\Users\Lenovo\CLionProjects\VirtualMoneyCounter\cmake-build-debug\CMakeFiles\VirtualMoneyCounter.dir\CXXDependInfo.json
 
 
 # =============================================================================
@@ -85,7 +85,7 @@ build CMakeFiles\VirtualMoneyCounter.dir\CXX.dd | C$:\Users\Lenovo\CLionProjects
 #############################################
 # Link the executable VirtualMoneyCounter.exe
 
-build VirtualMoneyCounter.exe: CXX_EXECUTABLE_LINKER__VirtualMoneyCounter_Debug CMakeFiles\VirtualMoneyCounter.dir\Main.cpp.obj CMakeFiles\VirtualMoneyCounter.dir\vc.c.obj | A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib
+build VirtualMoneyCounter.exe: CXX_EXECUTABLE_LINKER__VirtualMoneyCounter_Debug CMakeFiles\VirtualMoneyCounter.dir\src\Main.cpp.obj CMakeFiles\VirtualMoneyCounter.dir\src\vc.c.obj | A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib A$:\opencv\build\x64\vc16\lib\opencv_world4110d.lib
   FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -MDd -Zi
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  A:\opencv\build\x64\vc16\lib\opencv_world4110d.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib

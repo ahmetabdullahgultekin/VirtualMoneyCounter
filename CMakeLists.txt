@@ -10,7 +10,7 @@ find_package(OpenCV REQUIRED)
 # Include the OpenCV headers
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-add_executable(VirtualMoneyCounter Main.cpp vc.c vc.h)
+add_executable(VirtualMoneyCounter src/Main.cpp src/vc.c src/vc.h)
 
 # Link the OpenCV libraries to your executable
 target_link_libraries(VirtualMoneyCounter ${OpenCV_LIBS})
