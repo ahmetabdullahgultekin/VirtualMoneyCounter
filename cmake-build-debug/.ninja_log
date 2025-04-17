@@ -1,0 +1,18 @@
+# ninja log v6
+19	680	7663419716042228	CMakeFiles/VirtualMoneyCounter.dir/main.cpp.obj.ddi	9a820440988b58c2
+6522	6878	7665910732674790	VirtualMoneyCounter.exe	34f7bc152e06205f
+529	606	7665910672742739	CMakeFiles/VirtualMoneyCounter.dir/CXX.dd	96fbe85b09591963
+529	606	7665910672742739	C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/cmake-build-debug/CMakeFiles/VirtualMoneyCounter.dir/CXXModules.json	96fbe85b09591963
+728	800	7663419723125336	CMakeFiles/VirtualMoneyCounter.dir/main.cpp.obj.modmap	ed4f93bedbe902de
+814	6699	7663419723983170	CMakeFiles/VirtualMoneyCounter.dir/main.cpp.obj	3e3bf4756607a87
+9	809	7665909301221508	CMakeFiles/VirtualMoneyCounter.dir/CodigoExemplo.cpp.obj.ddi	c36d33d01ee53e49
+810	863	7665909309231845	CMakeFiles/VirtualMoneyCounter.dir/CodigoExemplo.cpp.obj.modmap	fd2d6cb0c35a4589
+864	6196	7665909309766508	CMakeFiles/VirtualMoneyCounter.dir/CodigoExemplo.cpp.obj	75ad3a99699b6295
+29	272	7663419716133857	CMakeFiles/VirtualMoneyCounter.dir/vc.c.obj	e50530959ea5611d
+6	694	7665910794415788	build.ninja	29ddd439856125f5
+7	528	7665910667519325	CMakeFiles/VirtualMoneyCounter.dir/Main.cpp.obj.ddi	9ed5d35c78249997
+529	606	7665910672742739	CMakeFiles/VirtualMoneyCounter.dir/Main.cpp.obj.modmap	96fbe85b09591963
+607	6522	7665910673532416	CMakeFiles/VirtualMoneyCounter.dir/Main.cpp.obj	1e7895172508b36e
+10	71	7665912249790453	CMakeFiles/VirtualMoneyCounter.dir/CXX.dd	96fbe85b09591963
+10	71	7665912249790453	C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/cmake-build-debug/CMakeFiles/VirtualMoneyCounter.dir/CXXModules.json	96fbe85b09591963
+10	71	7665912249790453	CMakeFiles/VirtualMoneyCounter.dir/Main.cpp.obj.modmap	96fbe85b09591963

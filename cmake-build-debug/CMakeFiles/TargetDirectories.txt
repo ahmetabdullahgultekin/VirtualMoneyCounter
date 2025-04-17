@@ -1,0 +1,3 @@
+C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/cmake-build-debug/CMakeFiles/VirtualMoneyCounter.dir
+C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/cmake-build-debug/CMakeFiles/rebuild_cache.dir
