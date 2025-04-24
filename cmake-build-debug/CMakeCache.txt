@@ -211,6 +211,9 @@ VirtualMoneyCounter_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 VirtualMoneyCounter_SOURCE_DIR:STATIC=C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter
 
+//The directory containing a CMake configuration file for spdlog.
+spdlog_DIR:PATH=spdlog_DIR-NOTFOUND
+
 
 ########################
 # INTERNAL cache entries

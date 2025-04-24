@@ -1136,6 +1136,18 @@
 			],
 			"type" : "STATIC",
 			"value" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter"
+		},
+		{
+			"name" : "spdlog_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for spdlog."
+				}
+			],
+			"type" : "PATH",
+			"value" : "spdlog_DIR-NOTFOUND"
 		}
 	],
 	"kind" : "cache",

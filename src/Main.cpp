@@ -32,7 +32,7 @@ extern "C" {
  * @brief Global variables
  * @var cap cv::VideoCapture - video capture handle
  * @var quitKey int - quitKey pressed (global so helpers can exit)
- * @var DP double - Hough parameters
+ * @var DP double - inverse ratio of the accumulator resolution to the image resolution
  * @var MIN_DIST int - minimum distance between detected centers
  * @var PARAM1 int - first method parameter for HoughCircles
  * @var PARAM2 int - second method parameter for HoughCircles
@@ -57,20 +57,19 @@ extern "C" {
 cv::VideoCapture cap;
 int quitKey = 0;
 const double DP = 1.2;
-const int MIN_DIST = 50;
 const int PARAM1 = 60;
-const int PARAM2 = 30;
-const int MIN_RADIUS = 20;
-const int MAX_RADIUS = 120;
+const int PARAM2 = 50;
+const int MIN_RADIUS = 55;
+const int MAX_RADIUS = 100;
+const int MIN_DIST = MIN_RADIUS * 2;
 const std::string VIDEO_FILE_DIR = "videos/";
 const std::string VIDEO_FILE_NAME = "video1.mp4";
 const std::string VIDEO_FILE_PATH = VIDEO_FILE_DIR + VIDEO_FILE_NAME;
-/* ---------- COIN‑SIZE DATA (EURO) ------------------------------------ */
 struct CoinSpec {
     double diameter;
     double value;
 };
-const CoinSpec EURO_COINS[] = {                // diameter in mm
+const CoinSpec EURO_COINS[] = {
         {16.25, 0.01},
         {18.75, 0.02},
         {21.25, 0.05},
@@ -81,11 +80,8 @@ const CoinSpec EURO_COINS[] = {                // diameter in mm
         {25.75, 2.00}
 };
 const int N_EURO_COINS = sizeof(EURO_COINS) / sizeof(EURO_COINS[0]);
-
-/* will be filled lazily the first time we see the biggest coin */
 bool gScaleReady = false;
-double gMmPerPixel = 0.0;   // mm = gMmPerPixel * pixel
-
+double gMmPerPixel = 0.0;
 
 /**
  * @brief Function prototypes
@@ -279,8 +275,26 @@ bool setup(const std::string &videoFile) {
  */
 bool preprocess(const cv::Mat &src, cv::Mat &dst) {
     try {
+        // Convert to grayscale
         cv::cvtColor(src, dst, cv::COLOR_BGR2GRAY);
-        cv::GaussianBlur(dst, dst, cv::Size(9, 9), 2);
+        // Apply Gaussian blur
+        cv::GaussianBlur(dst, dst, cv::Size(19, 19), 3);
+        // Apply Binary thresholding
+        cv::threshold(dst, dst, 140, 255, cv::THRESH_BINARY);
+        // Invert the image
+        /*cv::bitwise_not(dst, dst);*/
+/*        // Apply morphological operations
+        cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5));
+        cv::morphologyEx(dst, dst, cv::MORPH_CLOSE, kernel);
+        cv::morphologyEx(dst, dst, cv::MORPH_OPEN, kernel);
+        // Erode the image
+        cv::erode(dst, dst, kernel);
+        // Dilate the image
+        cv::dilate(dst, dst, kernel);*/
+        // Apply Canny edge detection
+        /*cv::Canny(dst, dst, 20, 30);*/
+        // Invert the image again
+        /*cv::bitwise_not(dst, dst);*/
     }
     catch (const std::exception &e) {
         return false;
@@ -316,10 +330,13 @@ std::vector<cv::Vec3f> detectCoins(const cv::Mat &preproc) {
  * @return coin value in €;  -1.0  if no match
  */
 double classifyEuroCoin(double dMM) {
-    const double TOL = 0.6;                 // ± 0.6 mm tolerance band
+    const double TOL = 0.5; // Increased tolerance to ±1.0 mm
     for (auto i: EURO_COINS)
-        if (std::fabs(dMM - i.diameter) <= TOL)
-            return i.value;
+        if (std::fabs(dMM - i.diameter) <= TOL) {
+        // Printing the diameter and value for debugging
+        std::cout << "Diameter: " << i.diameter << " Value: " << i.value << std::endl;
+        return i.value;
+    }
     return -1.0;
 }
 
@@ -429,6 +446,10 @@ int runProcess() {
             currentFrame++;
 
             if (!preprocess(frame, preproc)) return 2;
+
+            // Display the preprocessed image
+            cv::imshow("Preprocessed Image", preproc);
+
             auto circles = detectCoins(preproc);
             if (!draw(frame, circles, currentFrame)) return 3;
 
