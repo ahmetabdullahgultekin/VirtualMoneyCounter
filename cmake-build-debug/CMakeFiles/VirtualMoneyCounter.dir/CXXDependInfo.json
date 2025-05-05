@@ -5,6 +5,7 @@
 	"compiler-simulate-id" : "",
 	"config" : "Debug",
 	"cxx-modules" : {},
+	"database-info" : null,
 	"dir-cur-bld" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/cmake-build-debug",
 	"dir-cur-src" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter",
 	"dir-top-bld" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/cmake-build-debug",
@@ -17,5 +18,13 @@
 	],
 	"language" : "CXX",
 	"linked-target-dirs" : [],
-	"module-dir" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/cmake-build-debug/CMakeFiles/VirtualMoneyCounter.dir"
+	"module-dir" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/cmake-build-debug/CMakeFiles/VirtualMoneyCounter.dir",
+	"sources" : 
+	{
+		"CMakeFiles/VirtualMoneyCounter.dir/src/Main.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/src/Main.cpp"
+		}
+	}
 }

@@ -29,9 +29,17 @@ extern "C" {
 }
 
 /**
+ * @brief Namespaces for convenience
+ * using namespace std;
+ * using namespace cv;
+ */
+using namespace std;
+using namespace cv;
+
+/**
  * @brief Global variables
  * @var cap cv::VideoCapture - video capture handle
- * @var quitKey int - quitKey pressed (global so helpers can exit)
+ * @var quitKeyVar int - quitKeyVar pressed (global so helpers can exit)
  * @var DP double - inverse ratio of the accumulator resolution to the image resolution
  * @var MIN_DIST int - minimum distance between detected centers
  * @var PARAM1 int - first method parameter for HoughCircles
@@ -54,17 +62,76 @@ extern "C" {
  * It should be in the same directory as the source code.
  * The video file should be in a supported format (e.g., .mp4, .avi).
  */
-cv::VideoCapture cap;
-int quitKey = 0;
-const double DP = 1.2;
+
+/**
+ * @brief Video capture handle
+ * @details
+ * This variable is used to capture video frames from the specified video file.
+ * It is defined globally to be accessible in the setup, preprocess, detectCoins, and draw functions.
+ * The video capture handle is initialized in the setup function and released in the main function.
+ */
+VideoCapture cap(0);
+const int frameDelay = 1; // milliseconds
+int quitKeyVar = 0;
+const char quitKey = 'q';
+// Global vector to store unique coins
+vector<Vec3f> trackedCoins;
+
+/**
+ * @brief Hough Transform parameters
+ * @details
+ * These variables are used to configure the Hough Transform parameters for circle detection.
+ * They are defined globally to be accessible in the setup, preprocess, detectCoins, and draw functions.
+ * The DP variable is the inverse ratio of the accumulator resolution to the image resolution.
+ * The MIN_DIST variable is the minimum distance between detected centers.
+ * The PARAM1 and PARAM2 variables are the first and second method parameters for HoughCircles.
+ * The MIN_RADIUS and MAX_RADIUS variables define the minimum and maximum radius of circles to be detected.
+ * These parameters can be adjusted to improve the detection results based on the specific video being processed.
+ */
+/*const double DP = 1.2;
 const int PARAM1 = 60;
-const int PARAM2 = 50;
+const int PARAM2 = 60;
 const int MIN_RADIUS = 55;
-const int MAX_RADIUS = 100;
-const int MIN_DIST = MIN_RADIUS * 2;
-const std::string VIDEO_FILE_DIR = "videos/";
-const std::string VIDEO_FILE_NAME = "video1.mp4";
-const std::string VIDEO_FILE_PATH = VIDEO_FILE_DIR + VIDEO_FILE_NAME;
+const int MAX_RADIUS = 110;
+const int MIN_DIST = MIN_RADIUS * 2;*/
+
+// Global variables for Hough Transform parameters
+int dp = 12; // Scaled by 10 (e.g., 1.2 -> 12)
+int param1 = 60;
+int param2 = 60;
+int minRadius = 55;
+int maxRadius = 110;
+int minDist = minRadius * 2; // Minimum distance between detected centers
+
+// Global variables for Gaussian blur
+int blurSize = 9; // Size of the Gaussian kernel (must be odd)
+int blurSigma = 2; // Standard deviation for Gaussian blur
+
+// Global variables for Thresholding
+int thresholdValue = 150; // Threshold value for binary thresholding
+int thresholdMaxValue = 255; // Maximum value for binary thresholding
+int thresholdBlockSize = 11; // Block size for adaptive thresholding (must be odd)
+int thresholdC = 2; // Constant subtracted from the mean in adaptive thresholding
+
+/**
+ * @brief Video file path
+ * @details
+ * This variable stores the path to the video file to be processed.
+ * The video file should be in the same directory as the source code.
+ * The video file should be in a supported format (e.g., .mp4, .avi).
+ */
+const string VIDEO_FILE_DIR = "videos/";
+const string VIDEO_FILE_NAME = "video2.mp4";
+const string VIDEO_FILE_PATH = VIDEO_FILE_DIR + VIDEO_FILE_NAME;
+
+/**
+ * @brief Coin specifications
+ * @details
+ * This struct defines the specifications of euro coins.
+ * It includes the diameter and value of each coin.
+ * The EURO_COINS array contains the specifications of all euro coins.
+ * The N_EURO_COINS variable stores the number of euro coins in the array.
+ */
 struct CoinSpec {
     double diameter;
     double value;
@@ -103,42 +170,42 @@ double gMmPerPixel = 0.0;
  * The elapsed time is measured in seconds.
  *
  */
-bool setup(const std::string &videoFile);
+bool setup(const string &videoFile);
 
-bool preprocess(const cv::Mat &src, cv::Mat &dst);
+bool preprocess(const Mat &src, Mat &dst);
 
-std::vector<cv::Vec3f> detectCoins(const cv::Mat &preproc);
+vector<Vec3f> detectCoins(const Mat &preproc);
 
-bool draw(cv::Mat &frame, const std::vector<cv::Vec3f> &circles, int currentframe);
+bool draw(Mat &frame, const vector<Vec3f> &circles, int currentframe);
 
 double classifyEuroCoin(double dMM);
 
-double calculateTotal(const std::vector<cv::Vec3f> &circles);
+double calculateTotal(const vector<Vec3f> &circles);
 
 void vc_timer() {
     static bool running = false;
-    static std::chrono::steady_clock::time_point previousTime = std::chrono::steady_clock::now();
+    static chrono::steady_clock::time_point previousTime = chrono::steady_clock::now();
 
     if (!running) {
         running = true;
     } else {
-        std::chrono::steady_clock::time_point currentTime = std::chrono::steady_clock::now();
-        std::chrono::steady_clock::duration elapsedTime = currentTime - previousTime;
+        chrono::steady_clock::time_point currentTime = chrono::steady_clock::now();
+        chrono::steady_clock::duration elapsedTime = currentTime - previousTime;
 
         // Tempo em segundos.
-        auto time_span = std::chrono::duration_cast<std::chrono::duration<double>>(elapsedTime);
+        auto time_span = chrono::duration_cast<chrono::duration<double>>(elapsedTime);
         double nseconds = time_span.count();
 
-        std::cout << "Tempo decorrido: " << nseconds << "segundos" << std::endl;
-        std::cout << "Pressione qualquer tecla para continuar...\n";
-        std::cin.get();
+        cout << "Tempo decorrido: " << nseconds << "segundos" << endl;
+        cout << "Pressione qualquer tecla para continuar...\n";
+        cin.get();
     }
 }
 
 int professors_function() {
     // V�deo
     char videofile[20] = "video1.mp4";
-    cv::VideoCapture capture;
+    VideoCapture capture;
     struct {
         int width, height;
         int ntotalframes;
@@ -146,7 +213,7 @@ int professors_function() {
         int nframe;
     } video{};
     // Outros
-    std::string str;
+    string str;
     int key = 0;
 
     /* Leitura de v�deo de um ficheiro */
@@ -156,29 +223,29 @@ int professors_function() {
     capture.open(videofile);
 
     /* Em alternativa, abrir captura de v�deo pela Webcam #0 */
-    //capture.open(0, cv::CAP_DSHOW); // Pode-se utilizar apenas capture.open(0);
+    //capture.open(0, CAP_DSHOW); // Pode-se utilizar apenas capture.open(0);
 
     /* Verifica se foi poss�vel abrir o ficheiro de v�deo */
     if (!capture.isOpened()) {
-        std::cerr << "Erro ao abrir o ficheiro de v�deo!\n";
+        cerr << "Erro ao abrir o ficheiro de v�deo!\n";
         return 1;
     }
 
     /* N�mero total de frames no v�deo */
-    video.ntotalframes = (int) capture.get(cv::CAP_PROP_FRAME_COUNT);
+    video.ntotalframes = (int) capture.get(CAP_PROP_FRAME_COUNT);
     /* Frame rate do v�deo */
-    video.fps = (int) capture.get(cv::CAP_PROP_FPS);
+    video.fps = (int) capture.get(CAP_PROP_FPS);
     /* Resolu��o do v�deo */
-    video.width = (int) capture.get(cv::CAP_PROP_FRAME_WIDTH);
-    video.height = (int) capture.get(cv::CAP_PROP_FRAME_HEIGHT);
+    video.width = (int) capture.get(CAP_PROP_FRAME_WIDTH);
+    video.height = (int) capture.get(CAP_PROP_FRAME_HEIGHT);
 
     /* Cria uma janela para exibir o v�deo */
-    cv::namedWindow("VC - VIDEO", cv::WINDOW_AUTOSIZE);
+    namedWindow("VC - VIDEO", WINDOW_AUTOSIZE);
 
     /* Inicia o timer */
     vc_timer();
 
-    cv::Mat frame;
+    Mat frame;
     while (key != 'q') {
         /* Leitura de uma frame do v�deo */
         capture.read(frame);
@@ -187,7 +254,7 @@ int professors_function() {
         if (frame.empty()) break;
 
         /* N�mero da frame a processar */
-        video.nframe = (int) capture.get(cv::CAP_PROP_POS_FRAMES);
+        video.nframe = (int) capture.get(CAP_PROP_POS_FRAMES);
 
         // Fa�a o seu c�digo aqui...
         /*
@@ -205,32 +272,32 @@ int professors_function() {
         // +++++++++++++++++++++++++
 
         /* Exemplo de inser��o texto na frame */
-        str = std::string("RESOLUCAO: ").append(std::to_string(video.width)).append("x").append(
-                std::to_string(video.height));
-        cv::putText(frame, str, cv::Point(20, 25), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
-        cv::putText(frame, str, cv::Point(20, 25), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
-        str = std::string("TOTAL DE FRAMES: ").append(std::to_string(video.ntotalframes));
-        cv::putText(frame, str, cv::Point(20, 50), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
-        cv::putText(frame, str, cv::Point(20, 50), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
-        str = std::string("FRAME RATE: ").append(std::to_string(video.fps));
-        cv::putText(frame, str, cv::Point(20, 75), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
-        cv::putText(frame, str, cv::Point(20, 75), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
-        str = std::string("N. DA FRAME: ").append(std::to_string(video.nframe));
-        cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
-        cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
+        str = string("RESOLUCAO: ").append(to_string(video.width)).append("x").append(
+                to_string(video.height));
+        putText(frame, str, Point(20, 25), FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0, 0, 0), 2);
+        putText(frame, str, Point(20, 25), FONT_HERSHEY_SIMPLEX, 1.0, Scalar(255, 255, 255), 1);
+        str = string("TOTAL DE FRAMES: ").append(to_string(video.ntotalframes));
+        putText(frame, str, Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0, 0, 0), 2);
+        putText(frame, str, Point(20, 50), FONT_HERSHEY_SIMPLEX, 1.0, Scalar(255, 255, 255), 1);
+        str = string("FRAME RATE: ").append(to_string(video.fps));
+        putText(frame, str, Point(20, 75), FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0, 0, 0), 2);
+        putText(frame, str, Point(20, 75), FONT_HERSHEY_SIMPLEX, 1.0, Scalar(255, 255, 255), 1);
+        str = string("N. DA FRAME: ").append(to_string(video.nframe));
+        putText(frame, str, Point(20, 100), FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0, 0, 0), 2);
+        putText(frame, str, Point(20, 100), FONT_HERSHEY_SIMPLEX, 1.0, Scalar(255, 255, 255), 1);
 
         /* Exibe a frame */
-        cv::imshow("VC - VIDEO", frame);
+        imshow("VC - VIDEO", frame);
 
         /* Sai da aplica��o, se o utilizador premir a tecla 'q' */
-        key = cv::waitKey(1);
+        key = waitKey(1);
     }
 
     /* Para o timer e exibe o tempo decorrido */
     vc_timer();
 
     /* Fecha a janela */
-    cv::destroyWindow("VC - VIDEO");
+    destroyWindow("VC - VIDEO");
 
     /* Fecha o ficheiro de v�deo */
     capture.release();
@@ -251,13 +318,33 @@ int professors_function() {
  * @return bool - Returns true if the setup was successful, otherwise false.
  *
  */
-bool setup(const std::string &videoFile) {
+bool setup(const string &videoFile) {
     if (!cap.open(videoFile)) {
         return false;
     }
-    cv::namedWindow("Coin Detection", cv::WINDOW_AUTOSIZE);
+    namedWindow("Coin Detection", WINDOW_AUTOSIZE);
     vc_timer();                        // runProcess timing
     return true;
+}
+
+void onTrackbarChange(int, void*) {
+    // Callback function for trackbar changes (can be left empty)
+}
+
+void setupTrackbars() {
+    namedWindow("Parameters", WINDOW_AUTOSIZE);
+/*    createTrackbar("DP (x10)", "Parameters", &dp, 50, onTrackbarChange);
+    createTrackbar("Min Dist", "Parameters", &minDist, 200, onTrackbarChange);
+    createTrackbar("Param1", "Parameters", &param1, 200, onTrackbarChange);
+    createTrackbar("Param2", "Parameters", &param2, 200, onTrackbarChange);
+    createTrackbar("Min Radius", "Parameters", &minRadius, 200, onTrackbarChange);
+    createTrackbar("Max Radius", "Parameters", &maxRadius, 200, onTrackbarChange);*/
+
+    // Trackbars for Thresholding parameters
+    createTrackbar("Threshold Value", "Parameters", &thresholdValue, 255, onTrackbarChange);
+    createTrackbar("Max Value", "Parameters", &thresholdMaxValue, 255, onTrackbarChange);
+    createTrackbar("Block Size", "Parameters", &thresholdBlockSize, 50, onTrackbarChange);
+    createTrackbar("Threshold C", "Parameters", &thresholdC, 50, onTrackbarChange);
 }
 
 /**
@@ -273,34 +360,34 @@ bool setup(const std::string &videoFile) {
  *
  * @return int - Returns 0 if the preprocessing was successful.
  */
-bool preprocess(const cv::Mat &src, cv::Mat &dst) {
+/*bool preprocess(const Mat &src, Mat &dst) {
     try {
         // Convert to grayscale
-        cv::cvtColor(src, dst, cv::COLOR_BGR2GRAY);
+        cvtColor(src, dst, COLOR_BGR2GRAY);
         // Apply Gaussian blur
-        cv::GaussianBlur(dst, dst, cv::Size(19, 19), 3);
+        GaussianBlur(dst, dst, Size(55, 55), 3,3);
         // Apply Binary thresholding
-        cv::threshold(dst, dst, 140, 255, cv::THRESH_BINARY);
-        // Invert the image
-        /*cv::bitwise_not(dst, dst);*/
-/*        // Apply morphological operations
-        cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5));
-        cv::morphologyEx(dst, dst, cv::MORPH_CLOSE, kernel);
-        cv::morphologyEx(dst, dst, cv::MORPH_OPEN, kernel);
-        // Erode the image
-        cv::erode(dst, dst, kernel);
-        // Dilate the image
-        cv::dilate(dst, dst, kernel);*/
+        threshold(dst, dst, 120, 255, THRESH_BINARY);
         // Apply Canny edge detection
-        /*cv::Canny(dst, dst, 20, 30);*/
-        // Invert the image again
-        /*cv::bitwise_not(dst, dst);*/
+        *//*Canny(dst, dst, 25, 75);*//*
     }
-    catch (const std::exception &e) {
+    catch (const exception &e) {
         return false;
     }
     return true;
+}*/
+bool preprocess(const Mat &src, Mat &dst) {
+    cvtColor(src, dst, COLOR_BGR2GRAY);
+    GaussianBlur(dst, dst, Size(blurSize, blurSize), blurSigma, blurSigma);
+    // use Otsu to auto‐tune the threshold:
+    threshold(dst, dst, thresholdValue, thresholdMaxValue,THRESH_BINARY_INV | THRESH_OTSU);
+    // optional morphology to fill holes / remove speckle:
+    Mat kernel = getStructuringElement(MORPH_ELLIPSE, Size(5,5));
+    morphologyEx(dst, dst, MORPH_CLOSE, kernel);
+    morphologyEx(dst, dst, MORPH_OPEN,  kernel);
+    return true;
 }
+
 
 /**
  * @brief Detect coins function
@@ -312,32 +399,114 @@ bool preprocess(const cv::Mat &src, cv::Mat &dst) {
  * @param preproc - The preprocessed input image.
  * @return std::vector<cv::Vec3f> - A vector of detected circles (coins).
  */
-std::vector<cv::Vec3f> detectCoins(const cv::Mat &preproc) {
+/*vector<Vec3f> detectCoins(const Mat &preproc) {
     try {
-        std::vector<cv::Vec3f> circles;
-        cv::HoughCircles(preproc, circles, cv::HOUGH_GRADIENT,
-                         DP, MIN_DIST, PARAM1, PARAM2,
-                         MIN_RADIUS, MAX_RADIUS);
+        vector<Vec3f> circles;
+        double dpValue = dp / 10.0; // Convert scaled DP back to a double
+        HoughCircles(preproc, circles, HOUGH_GRADIENT,
+                     dpValue, minDist, param1, param2,
+                     minRadius, maxRadius);
         return circles;
-    }
-    catch (const std::exception &e) {
+    } catch (const exception &e) {
         return {};
     }
+}*/
+vector<Vec3f> detectCoins(const Mat &preproc) {
+    vector<Vec3f> circles;
+    // 1) Find all external contours
+    vector<vector<Point>> contours;
+    findContours(preproc, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+
+    for (auto &c : contours) {
+        double area = contourArea(c);
+        if (area < 100.0)
+            continue;               // skip tiny noise blobs
+
+        double peri = arcLength(c, true);
+        double circ = 4.0*CV_PI*area/(peri*peri);
+        if (circ < 0.75)
+            continue;               // require at least ~75% circular
+
+        // 2) Fit minimum enclosing circle
+        Point2f center;
+        float   radius;
+        minEnclosingCircle(c, center, radius);
+
+        // 3) Optionally enforce a radius window too
+        if (radius < minRadius || radius > maxRadius)
+            continue;
+
+        circles.emplace_back(center.x, center.y, radius);
+    }
+    return circles;
 }
 
 /**
- * @brief Classify a euro coin by its measured diameter.
- * @return coin value in €;  -1.0  if no match
+ * @brief Classify a euro coin based on its measured diameter.
+ *
+ * This function determines the value of a euro coin by comparing its
+ * measured diameter to the predefined diameters of euro coins. It finds
+ * the closest match dynamically by calculating the absolute difference
+ * between the measured diameter and each coin's diameter.
+ *
+ * @param dMM - The measured diameter of the coin in millimeters.
+ * @return double - The value of the coin in euros; returns -1.0 if no match is found.
  */
 double classifyEuroCoin(double dMM) {
-    const double TOL = 0.5; // Increased tolerance to ±1.0 mm
-    for (auto i: EURO_COINS)
-        if (std::fabs(dMM - i.diameter) <= TOL) {
-        // Printing the diameter and value for debugging
-        std::cout << "Diameter: " << i.diameter << " Value: " << i.value << std::endl;
-        return i.value;
+    // Printing the diameter for debugging
+    cout << "Diameter: " << dMM << endl;
+
+    double closestValue = -1.0;
+    double minDifference = numeric_limits<double>::max();
+
+    for (const auto &coin : EURO_COINS) {
+        double difference = fabs(dMM - coin.diameter);
+        if (difference < minDifference) {
+            minDifference = difference;
+            closestValue = coin.value;
+        }
     }
-    return -1.0;
+
+    // Printing the closest diameter and value for debugging
+    if (closestValue != -1.0) {
+        cout << "Closest Diameter: " << (dMM - minDifference) << " Value: " << closestValue << endl;
+    }
+
+    return closestValue;
+}
+
+/**
+ * @brief Check if a detected coin is the same as a previously tracked coin.
+ * @param newCoin - The newly detected coin (circle).
+ * @return bool - True if the coin is already tracked, false otherwise.
+ */
+bool isSameCoin(const Vec3f &newCoin) {
+    const double positionThreshold = 10.0; // Max distance between centers
+    const double radiusThreshold = 5.0;   // Max difference in radius
+
+    for (const auto &trackedCoin : trackedCoins) {
+        double dx = newCoin[0] - trackedCoin[0];
+        double dy = newCoin[1] - trackedCoin[1];
+        double distance = std::sqrt(dx * dx + dy * dy);
+        double radiusDiff = std::abs(newCoin[2] - trackedCoin[2]);
+
+        if (distance < positionThreshold && radiusDiff < radiusThreshold) {
+            return true; // Coin is the same
+        }
+    }
+    return false;
+}
+
+/**
+ * @brief Update the list of tracked coins with new detections.
+ * @param detectedCoins - The coins detected in the current frame.
+ */
+void updateTrackedCoins(const std::vector<Vec3f> &detectedCoins) {
+    for (const auto &coin : detectedCoins) {
+        if (!isSameCoin(coin)) {
+            trackedCoins.push_back(coin); // Add new coin to the list
+        }
+    }
 }
 
 /**
@@ -347,13 +516,13 @@ double classifyEuroCoin(double dMM) {
  * (assumed to be a €2 coin: 25.75 mm).  From then on it just applies
  * that scale to every circle and looks up a euro denomination.
  */
-double calculateTotal(const std::vector<cv::Vec3f> &circles) {
+double calculateTotal(const vector<Vec3f> &circles) {
     if (circles.empty()) return 0.0;
 
     /* --- one‑off scale calibration ------------------------------------ */
     if (!gScaleReady) {
         int maxR = 0;
-        for (auto &c: circles) maxR = std::max(maxR, cvRound(c[2]));
+        for (auto &c: circles) maxR = max(maxR, cvRound(c[2]));
         gMmPerPixel = 25.75 / (2.0 * maxR);   // assume biggest coin = €2 (25.75 mm Ø)
         gScaleReady = true;
     }
@@ -382,41 +551,50 @@ double calculateTotal(const std::vector<cv::Vec3f> &circles) {
  *
  * @return bool - Returns true if the drawing was successful, otherwise false.
  */
-bool draw(cv::Mat &frame, const std::vector<cv::Vec3f> &circles, int currentframe) {
+bool draw(Mat &frame, const vector<Vec3f> &circles, int currentframe) {
     try {
         for (const auto &c: circles) {
-            cv::Point center(cvRound(c[0]), cvRound(c[1]));
+            Point center(cvRound(c[0]), cvRound(c[1]));
             int radius = cvRound(c[2]);
-            cv::circle(frame, center, radius, cv::Scalar(0, 255, 0), 2);
-            cv::circle(frame, center, 2, cv::Scalar(0, 0, 255), 3);
+            circle(frame, center, radius, Scalar(0, 255, 0), 2);
+            circle(frame, center, 2, Scalar(0, 0, 255), 3);
+
+            // Classify the coin and add text
+            double diameterMM = 2.0 * radius * gMmPerPixel;
+            double coinValue = classifyEuroCoin(diameterMM);
+
+            if (coinValue > 0.0) {
+                ostringstream oss;
+                oss.setf(ios::fixed);
+                oss.precision(2);
+                oss << "€" << coinValue;
+
+                putText(frame, oss.str(), Point(center.x - 20, center.y - radius - 10),
+                        FONT_HERSHEY_SIMPLEX, 0.6, Scalar(255, 255, 255), 2);
+                putText(frame, oss.str(), Point(center.x - 20, center.y - radius - 10),
+                        FONT_HERSHEY_SIMPLEX, 0.6, Scalar(0, 0, 0), 1);
+            }
         }
 
         double total = calculateTotal(circles);
-        std::ostringstream oss;
-        oss.setf(std::ios::fixed);
+        ostringstream oss;
+        oss.setf(ios::fixed);
         oss.precision(2);
         oss << "COINS: " << circles.size()
             << "  |  TOTAL: €" << total
             << "  |  FRAME: " << currentframe;
 
-        std::string txt = oss.str();
-        cv::putText(frame, txt, cv::Point(20, 40),
-                    cv::FONT_HERSHEY_SIMPLEX, 1.0,
-                    cv::Scalar(0, 0, 0), 2);
-        cv::putText(frame, txt, cv::Point(20, 40),
-                    cv::FONT_HERSHEY_SIMPLEX, 1.0,
-                    cv::Scalar(255, 255, 255), 1);
+        string txt = oss.str();
+        putText(frame, txt, Point(20, 40),
+                FONT_HERSHEY_SIMPLEX, 1.0,
+                Scalar(0, 0, 0), 2);
+        putText(frame, txt, Point(20, 40),
+                FONT_HERSHEY_SIMPLEX, 1.0,
+                Scalar(255, 255, 255), 1);
 
-        cv::putText(frame, txt, cv::Point(20, 40),
-                    cv::FONT_HERSHEY_SIMPLEX, 1.0,
-                    cv::Scalar(0, 0, 0), 2);
-        cv::putText(frame, txt, cv::Point(20, 40),
-                    cv::FONT_HERSHEY_SIMPLEX, 1.0,
-                    cv::Scalar(255, 255, 255), 1);
-
-        cv::imshow("Coin Detection", frame);
+        imshow("Coin Detection", frame);
     }
-    catch (const std::exception &e) {
+    catch (const exception &e) {
         return false;
     }
     return true;
@@ -428,41 +606,46 @@ bool draw(cv::Mat &frame, const std::vector<cv::Vec3f> &circles, int currentfram
  * This is the main function of the program.
  * It calls the setup function to initialize the video capture and create a window.
  * It then enters a loop to read frames from the video, preprocess them, detect coins, and draw the results.
- * The loop continues until the user presses the 'q' quitKey or there are no more frames to read.
+ * The loop continues until the user presses the 'q' quitKeyVar or there are no more frames to read.
  * After processing all frames, it stops the timer and releases the video capture.
  *
  * @return int - Returns 0 if the program executed successfully.
  */
 int runProcess() {
     try {
-        const std::string videoFile = VIDEO_FILE_PATH;
+        const string videoFile = VIDEO_FILE_PATH;
         if (!setup(videoFile)) return 1;
 
-        cv::Mat frame, preproc;
+        setupTrackbars();
+
+        Mat frame, preproc;
         int currentFrame = 0;
+        bool paused = false; // Pause state
 
-        while (quitKey != 'q') {
-            if (!cap.read(frame) || frame.empty()) break;
-            currentFrame++;
+        while (true) {
+            if (!paused) {
+                if (!cap.read(frame) || frame.empty()) break;
+                currentFrame++;
 
-            if (!preprocess(frame, preproc)) return 2;
+                if (!preprocess(frame, preproc)) return 2;
 
-            // Display the preprocessed image
-            cv::imshow("Preprocessed Image", preproc);
+                imshow("Preprocessed Image", preproc);
 
-            auto circles = detectCoins(preproc);
-            if (!draw(frame, circles, currentFrame)) return 3;
+                auto circles = detectCoins(preproc);
+                if (!draw(frame, circles, currentFrame)) return 3;
+            }
 
-            quitKey = cv::waitKey(1);
+            int key = waitKey(frameDelay);
+            if (key == quitKey) break; // Quit if 'q' is pressed
+            if (key == 'p') paused = !paused; // Toggle pause state
         }
 
-        vc_timer();                                   // stop timing
-        cv::destroyWindow("Coin Detection");
+        vc_timer();
+        destroyWindow("Coin Detection");
         cap.release();
-        // Close window
-        cv::destroyAllWindows();
+        destroyAllWindows();
     }
-    catch (const std::exception &e) {
+    catch (const exception &e) {
         return 4;
     }
 
@@ -482,19 +665,19 @@ int main() {
     int result = runProcess();
     switch (result) {
         case 1:
-            std::cerr << "Error: Unable to open video file." << std::endl;
+            cerr << "Error: Unable to open video file." << endl;
             break;
         case 2:
-            std::cerr << "Error: Preprocessing failed." << std::endl;
+            cerr << "Error: Preprocessing failed." << endl;
             break;
         case 3:
-            std::cerr << "Error: Drawing failed." << std::endl;
+            cerr << "Error: Drawing failed." << endl;
             break;
         case 4:
-            std::cerr << "Error: Coin detection failed." << std::endl;
+            cerr << "Error: Coin detection failed." << endl;
             break;
         default:
-            std::cout << "Coin detection completed successfully." << std::endl;
+            cout << "Coin detection completed successfully." << endl;
     }
 
     return 0;
