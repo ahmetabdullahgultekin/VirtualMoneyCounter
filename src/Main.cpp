@@ -640,7 +640,7 @@ double classifyEuroCoin(double dMM) {
  * @param newCoin - The newly detected coin (circle).
  * @return bool - True if the coin is already tracked, false otherwise.
  */
-bool isSameCoin(const TrackedCoin &oldC, const cv::Vec3f &newC)
+/*bool isSameCoin(const TrackedCoin &oldC, const cv::Vec3f &newC)
 {
     const double posThr = 10.0;  // centre-to-centre px
     const double radThr = 5.0;   // radius px
@@ -650,7 +650,7 @@ bool isSameCoin(const TrackedCoin &oldC, const cv::Vec3f &newC)
     double dist = std::sqrt(dx * dx + dy * dy);
 
     return (dist < posThr) && (std::abs(newC[2] - oldC.circle[2]) < radThr);
-}
+}*/
 
 
 /**
