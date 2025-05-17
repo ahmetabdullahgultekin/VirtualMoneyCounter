@@ -1,3 +1,13 @@
 ninja_dyndep_version = 1.0
 build CMakeFiles\VirtualMoneyCounter.dir\src\Main.cpp.obj: dyndep
 
+build CMakeFiles\VirtualMoneyCounter.dir\src\preprocess.cpp.obj: dyndep
+
+build CMakeFiles\VirtualMoneyCounter.dir\src\coin_detection.cpp.obj: dyndep
+
+build CMakeFiles\VirtualMoneyCounter.dir\src\coin_classifier.cpp.obj: dyndep
+
+build CMakeFiles\VirtualMoneyCounter.dir\src\detection_visualizer.cpp.obj: dyndep
+
+build CMakeFiles\VirtualMoneyCounter.dir\src\setup.cpp.obj: dyndep
+

@@ -25,6 +25,31 @@
 		{
 			"language" : "CXX",
 			"source" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/src/Main.cpp"
+		},
+		"CMakeFiles/VirtualMoneyCounter.dir/src/coin_classifier.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/src/coin_classifier.cpp"
+		},
+		"CMakeFiles/VirtualMoneyCounter.dir/src/coin_detection.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/src/coin_detection.cpp"
+		},
+		"CMakeFiles/VirtualMoneyCounter.dir/src/detection_visualizer.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/src/detection_visualizer.cpp"
+		},
+		"CMakeFiles/VirtualMoneyCounter.dir/src/preprocess.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/src/preprocess.cpp"
+		},
+		"CMakeFiles/VirtualMoneyCounter.dir/src/setup.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/src/setup.cpp"
 		}
 	}
 }
