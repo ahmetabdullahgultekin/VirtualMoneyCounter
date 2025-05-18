@@ -25,12 +25,6 @@ using namespace cv;
  * The MIN_RADIUS and MAX_RADIUS variables define the minimum and maximum radius of circles to be detected.
  * These parameters can be adjusted to improve the detection results based on the specific video being processed.
  */
-/*const double DP = 1.2;
-const int PARAM1 = 60;
-const int PARAM2 = 60;
-const int MIN_RADIUS = 55;
-const int MAX_RADIUS = 110;
-const int MIN_DIST = MIN_RADIUS * 2;*/
 
 // Global variables for Hough Transform parameters
 extern int dp; // Scaled by 10 (e.g., 1.2 -> 12)

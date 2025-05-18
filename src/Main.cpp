@@ -12,16 +12,7 @@
  * The video file should be in the same directory as the source code.
  */
 
-#include <iostream>
 #include "setup.h"
-
-/**
- * @brief Namespaces for convenience
- * using namespace std;
- * using namespace cv;
- */
-using namespace std;
-using namespace cv;
 
 /**
  * @brief Main function

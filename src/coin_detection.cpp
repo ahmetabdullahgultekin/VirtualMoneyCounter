@@ -42,7 +42,7 @@ vector<Vec3f> detectCoins(const Mat &preproc) {
 
         double peri = arcLength(c, true);
         double circ = 4.0 * CV_PI * area / (peri * peri);
-        cout << "Circularity: " << circ << endl;
+
         if (circ < 0.75)
             continue;               // require at least ~75% circular
 
@@ -52,7 +52,7 @@ vector<Vec3f> detectCoins(const Mat &preproc) {
         minEnclosingCircle(c, center, radius);
 
         // 3) Optionally enforce a radius window too
-        if (radius < minRadius || radius > maxRadius)
+        if (radius < (float) minRadius || radius > (float) maxRadius)
             continue;
 
         circles.emplace_back(center.x, center.y, radius);

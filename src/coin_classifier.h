@@ -9,6 +9,9 @@
 #include <cmath>
 #include <opencv2/opencv.hpp>
 
+#include "coin_tracker.h"
+#include "coin_detection.h"
+
 using namespace std;
 using namespace cv;
 using namespace chrono;
@@ -38,33 +41,17 @@ const CoinSpec EURO_COINS[] = {
 const int N_EURO_COINS = sizeof(EURO_COINS) / sizeof(EURO_COINS[0]);
 extern bool gScaleReady;
 extern double gMmPerPixel;
-static int seenLargestR = 0;
 
-// Global variables to track cumulative totals
-// Array to count coins of each denomination
-extern int coinsCount[N_EURO_COINS];
-extern double totalValueSum;
-extern int totalCoins;
-
-// Detected coin structure
-struct DetectedCircle {
-    Vec3f circle; // Circle parameters (x, y, radius)
-};
-
-// Classifies an euro coin based on its measured diameter in millimeters.
+// Classifies the euro coin based on its measured diameter in millimeters.
 // Returns the coin value in euros; returns -1.0 if no match is found.
 double classifyEuroCoin(double dMM);
 
-// Calculates the average monetary value per coin by processing the detected circles.
-// Returns the average value computed.
-double calculateTotal(const std::vector<cv::Vec3f> &circles);
+// Computes the average color of a circular region in the image.
+// Takes the image, center point, and radius as input.
+// Returns the average color in BGR format.
+Scalar getAverageColor(const Mat &image, Point2f center, float radius);
 
-// Checks if the coin looks fake based on its chroma in BGR format.
-// Returns true if the coin is considered fake.
-bool looksFakeByChroma(const cv::Mat &rgb, const cv::Vec3f &c);
-
-// Checks if the coin looks fake based on its Lab colour representation.
-// Returns true if the coin is considered fake.
-bool looksFakeByLab(const cv::Mat &rgb, const cv::Vec3f &c);
+// Checks if the detected color is within the expected range for euro coins.
+bool isCoinColor(const Scalar &color);
 
 #endif // VIRTUALMONEYCOUNTER_COIN_CLASSIFIER_H

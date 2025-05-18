@@ -19,6 +19,7 @@
 #include "coin_detection.h"
 #include "detection_visualizer.h"
 #include "preprocess.h"
+#include "coin_tracker.h"
 
 /**
  * @brief Include the vc.h header file
@@ -27,6 +28,11 @@ extern "C" {
 #include "vc.h"
 }
 
+/**
+ * @brief Namespaces for convenience
+ * using namespace std;
+ * using namespace cv;
+ */
 using namespace std;
 using namespace cv;
 

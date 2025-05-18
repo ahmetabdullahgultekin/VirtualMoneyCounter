@@ -13,6 +13,7 @@
 
 #include "coin_classifier.h"
 #include "coin_detection.h"
+#include "coin_tracker.h"
 
 using namespace std;
 using namespace cv;
@@ -21,5 +22,11 @@ using namespace cv;
 // and overlay frame statistics (coin count, average total, frame number).
 // Returns true if the drawing is successful.
 bool draw(cv::Mat &frame, const std::vector<cv::Vec3f> &circles, int currentframe);
+
+// Calculates the total monetary value of the detected coins.
+// The first time it runs, it sets gMmPerPixel using the largest circle
+// diameter.
+// It returns the average value of the coins.
+double calculateTotal(const vector<cv::Vec3f> &circles);
 
 #endif // VIRTUALMONEYCOUNTER_DETECTION_VISUALIZER_H

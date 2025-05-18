@@ -36,6 +36,11 @@
 			"language" : "CXX",
 			"source" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/src/coin_detection.cpp"
 		},
+		"CMakeFiles/VirtualMoneyCounter.dir/src/coin_tracker.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/src/coin_tracker.cpp"
+		},
 		"CMakeFiles/VirtualMoneyCounter.dir/src/detection_visualizer.cpp.obj" : 
 		{
 			"language" : "CXX",

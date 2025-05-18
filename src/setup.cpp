@@ -95,21 +95,31 @@ int runProcess() {
         /*setupTrackbars();*/
 
         Mat frame, preproc;
-        int currentFrame = 0;
         bool paused = false; // Pause state
 
         while (true) {
             if (!paused) {
                 if (!cap.read(frame) || frame.empty()) break;
-                currentFrame++;
 
                 if (!preprocess(frame, preproc)) return 2;
 
                 imshow("Preprocessed Image", preproc);
 
                 auto circles = detectCoins(preproc);
-                //auto coinPatches = extractCoinPatches(frame, circles  *//*or trackedCoins[i].circle*//* );
-                if (!draw(frame, circles, currentFrame)) return 3;
+
+                vector<Point2f> centers;
+                vector<float> radii;
+
+                for (const auto &c: circles) {
+                    centers.emplace_back(c[0], c[1]);
+                    radii.emplace_back(c[2]);
+                }
+
+                trackedObjects = updateTracks(centers, radii, frame, 30.0f);
+
+                if (!draw(frame, circles, frameIndex)) return 3;
+
+                frameIndex++;
             }
 
             int key = waitKey(frameDelay);
