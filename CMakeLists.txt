@@ -22,7 +22,9 @@ add_executable(VirtualMoneyCounter src/Main.cpp src/vc.c src/vc.h
         src/setup.cpp
         src/setup.h
         src/coin_tracker.cpp
-        src/coin_tracker.h)
+        src/coin_tracker.h
+        src/info_windows.cpp
+        src/info_windows.h)
 
 # Link the OpenCV libraries to your executable
 target_link_libraries(VirtualMoneyCounter ${OpenCV_LIBS})

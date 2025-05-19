@@ -46,6 +46,11 @@
 			"language" : "CXX",
 			"source" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/src/detection_visualizer.cpp"
 		},
+		"CMakeFiles/VirtualMoneyCounter.dir/src/info_windows.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Users/Lenovo/CLionProjects/VirtualMoneyCounter/src/info_windows.cpp"
+		},
 		"CMakeFiles/VirtualMoneyCounter.dir/src/preprocess.cpp.obj" : 
 		{
 			"language" : "CXX",

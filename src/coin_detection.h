@@ -45,32 +45,4 @@ extern int minDist; // Minimum distance between detected centers
  */
 vector<Vec3f> detectCoins(const Mat &preproc);
 
-/**
- * @brief Global variables
- * @var cap cv::VideoCapture - video capture handle
- * @var quitKeyVar int - quitKeyVar pressed (global so helpers can exit)
- * @var DP double - inverse ratio of the accumulator resolution to the image resolution
- * @var MIN_DIST int - minimum distance between detected centers
- * @var PARAM1 int - first method parameter for HoughCircles
- * @var PARAM2 int - second method parameter for HoughCircles
- * @var MIN_RADIUS int - minimum radius of circles to be detected
- * @var MAX_RADIUS int - maximum radius of circles to be detected
- * @var VIDEO_FILE_PATH std::string - path to the video file
- *
- * @details
- * These variables are used to configure the Hough Transform parameters for circle detection.
- * They are defined globally to be accessible in the setup, preprocess, detectCoins, and draw functions.
- * The DP variable is the inverse ratio of the accumulator resolution to the image resolution.
- * The MIN_DIST variable is the minimum distance between detected centers.
- * The PARAM1 and PARAM2 variables are the first and second method parameters for HoughCircles.
- * The MIN_RADIUS and MAX_RADIUS variables define the minimum and maximum radius of circles to be detected.
- * These parameters can be adjusted to improve the detection results based on the specific video being processed.
- * The default values are set to reasonable values for detecting coins in a video.
- * These values can be modified based on the specific requirements of the application.
- * The VIDEO_FILE_PATH variable is the path to the video file to be processed.
- * It should be in the same directory as the source code.
- * The video file should be in a supported format (e.g., .mp4, .avi).
- */
-
-
 #endif // VIRTUALMONEYCOUNTER_COIN_DETECTION_H

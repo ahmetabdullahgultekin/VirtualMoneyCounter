@@ -23,32 +23,12 @@ int thresholdC = 2; // This constant subtracted from the mean in adaptive thresh
  *
  * @return int - Returns 0 if the preprocessing was successful.
  */
-/*bool preprocess(const Mat &src, Mat &dst) {
-    try {
-        // Convert to grayscale
-        cvtColor(src, dst, COLOR_BGR2GRAY);
-        // Apply Gaussian blur
-        GaussianBlur(dst, dst, Size(55, 55), 3,3);
-        // Apply Binary thresholding
-        threshold(dst, dst, 120, 255, THRESH_BINARY);
-        // Apply Canny edge detection
-        *//*Canny(dst, dst, 25, 75);*//*
-    }
-    catch (const exception &e) {
-        return false;
-    }
-    return true;
-}*/
 bool preprocess(const Mat &src, Mat &dst) {
     try {
         cvtColor(src, dst, COLOR_BGR2GRAY);
         GaussianBlur(dst, dst, Size(blurSize, blurSize), blurSigma, blurSigma);
         // use Otsu to auto‐tune the threshold:
         threshold(dst, dst, thresholdValue, thresholdMaxValue, THRESH_BINARY_INV | THRESH_OTSU);
-        // optional morphology to fill holes / remove speckle:
-        /*Mat kernel = getStructuringElement(MORPH_ELLIPSE, Size(5, 5));
-        morphologyEx(dst, dst, MORPH_CLOSE, kernel);
-        morphologyEx(dst, dst, MORPH_OPEN, kernel);*/
     } catch (const exception &e) {
         return false;
     }

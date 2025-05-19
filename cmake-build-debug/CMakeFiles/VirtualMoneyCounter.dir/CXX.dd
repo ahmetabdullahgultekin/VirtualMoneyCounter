@@ -13,3 +13,5 @@ build CMakeFiles\VirtualMoneyCounter.dir\src\setup.cpp.obj: dyndep
 
 build CMakeFiles\VirtualMoneyCounter.dir\src\coin_tracker.cpp.obj: dyndep
 
+build CMakeFiles\VirtualMoneyCounter.dir\src\info_windows.cpp.obj: dyndep
+

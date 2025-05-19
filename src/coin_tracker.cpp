@@ -5,6 +5,12 @@ int nextObjectId = 0;
 map<int, TrackedObject> objectInfo;
 map<int, Point2f> trackedObjects; // id -> last-known position
 
+// Coin Counters
+int realCoinCount = 0;
+int fakeCoinCount = 0;
+double totalRealCoinValue = 0;
+double totalFakeCoinValue = 0;
+
 float distance(Point2f a, Point2f b) {
     return sqrt((float) (a.x - b.x) * (a.x - b.x) +
                 (float) (a.y - b.y) * (a.y - b.y));
@@ -21,13 +27,22 @@ map<int, Point2f> updateTracks(const vector<Point2f> &detectedCenters,
         float minDistance = maxDistance;
         int bestIndex = -1;
 
+        // Debuger
+        cout << "ID: " << id << ", Previous Center: (" << prevCenter.x << ", " << prevCenter.y << ")" << endl;
+
         // Check if the object is still in the frame
         for (int i = 0; i < detectedCenters.size(); ++i) {
             if (matched[i]) continue;
             float dist = distance(prevCenter, detectedCenters[i]);
+            // Debuger
+            cout << "ID: " << id << ", Distance: " << dist << endl;
             if (dist < minDistance) {
                 minDistance = dist;
                 bestIndex = i;
+                // Debuger
+                cout << "ID: " << id << ", Best Index: " << bestIndex
+                     << ", Min Distance: " << minDistance
+                     << ", Radius: " << radii[i] << endl;
             }
         }
 
@@ -41,7 +56,8 @@ map<int, Point2f> updateTracks(const vector<Point2f> &detectedCenters,
             objectInfo[id].center = newCenter;
             objectInfo[id].lastSeen = frameIndex;
             // The Object has not disappeared yet
-            objectInfo[id].isDisappeared = false;//isDisappeared(objectInfo[id].lastSeen, frameIndex, 1);
+            objectInfo[id].isDisappeared = false;
+            objectInfo[id].disappearedFrame = 0; // Reset the disappeared frame count
             // Update the average color by calculating the average color with the previous average color
             //objectInfo[id].avgColor = 0.5 * (objectInfo[id].avgColor + 2.0 * getAverageColor(frame, newCenter, radii[bestIndex])); // average color in BGR
             // Update diameter by calculating the average diameter with the previous diameter
@@ -55,6 +71,14 @@ map<int, Point2f> updateTracks(const vector<Point2f> &detectedCenters,
             // If no match is found, mark the object as disappeared
         else {
             objectInfo[id].isDisappeared = true;
+            objectInfo[id].disappearedFrame++;
+            if (objectInfo[id].disappearedFrame > 5) { // If the object has disappeared for more than 30 frames
+                objectInfo[id].isDisappeared = true;
+                objectInfo[id].disappearedFrame = 0; // Reset the disappeared frame count
+            } else {
+                //objectInfo[id].isDisappeared = false; // The object has not disappeared yet
+                //return updatedPositions;
+            }
         }
     }
 
@@ -106,4 +130,27 @@ map<int, Point2f> updateTracks(const vector<Point2f> &detectedCenters,
     }
 
     return updatedPositions;
+}
+
+// Prepare summary
+void prepareSummary() {
+    // Initialize the summary variables
+    realCoinCount = 0;
+    fakeCoinCount = 0;
+    totalRealCoinValue = 0;
+    totalFakeCoinValue = 0;
+
+    // Iterate through the tracked objects and count real and fake coins
+    for (const auto &[id, obj]: objectInfo) {
+        if (obj.isCoin) {
+            realCoinCount++;
+            totalRealCoinValue += obj.value;
+        } else {
+            fakeCoinCount++;
+            totalFakeCoinValue += obj.value;
+        }
+    }
+
+    // Show the summary
+    showSummary(realCoinCount, fakeCoinCount, totalRealCoinValue, totalFakeCoinValue);
 }

@@ -14,12 +14,15 @@
 #include <thread>
 #include <vector>
 #include <cmath>
+#include <filesystem>
+#include <atomic>
 
 #include "coin_classifier.h"
 #include "coin_detection.h"
 #include "detection_visualizer.h"
 #include "preprocess.h"
 #include "coin_tracker.h"
+#include "info_windows.h"
 
 /**
  * @brief Include the vc.h header file
@@ -62,7 +65,7 @@ extern const char quitKey;
  * The video file should be in a supported format (e.g., .mp4, .avi).
  */
 const string VIDEO_FILE_DIR = "videos/";
-const string VIDEO_FILE_NAME = "video2.mp4";
+const string VIDEO_FILE_NAME = "video1.mp4";
 const string VIDEO_FILE_PATH = VIDEO_FILE_DIR + VIDEO_FILE_NAME;
 
 void vc_timer();
@@ -79,10 +82,15 @@ void vc_timer();
  */
 bool setup(const std::string &videoFile);
 
-/*void onTrackbarChange(int, void *);
-
-void setupTrackbars();*/
-
+/**
+ * @brief Main function
+ * @details
+ * This function runs the main process of the program.
+ * It captures video frames, preprocesses them, detects coins, and draws the results.
+ * The function returns an integer indicating the result of the process.
+ *
+ * @return int - Returns 0 if the process was successful, otherwise an error code.
+ */
 int runProcess();
 
 #endif //VIRTUALMONEYCOUNTER_SETUP_H

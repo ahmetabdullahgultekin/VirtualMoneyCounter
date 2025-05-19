@@ -42,7 +42,7 @@ bool isCoinColor(const Scalar &color) {
     double g = color[1];
     double b = color[2];
 
-    return (r >= 30 && r <= 95) &&
-           (g >= 50 && g <= 105) &&
-           (b >= 70 && b <= 105);
+    return (r >= 25 && r <= 95) &&
+           (g >= 40 && g <= 120) &&
+           (b >= 55 && b <= 125);
 }

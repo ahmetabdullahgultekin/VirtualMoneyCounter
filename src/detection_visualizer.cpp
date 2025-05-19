@@ -17,25 +17,25 @@ bool draw(Mat &frame, const vector<Vec3f> &circles, int currentframe) {
     try {
         // Draw the detected objectInfo
         for (const auto &[id, obj]: objectInfo) {
-            // Do not draw if the object is not a coin
-            //if (!isCoinColor(c)) continue;
-            // Draw the circle outline
-            /*Point center(cvRound(c[0]), cvRound(c[1]));
-            int radius = cvRound(c[2]);*/
-            // Draw the green circle outline if the object is a coin,
-            // Draw the red circle outline if the object is not a coin
-            // Do not draw if the object is disappeared
+            /**
+             * Do not draw if the object is not a coin,
+             * Draw the green circle outline if the object is a coin,
+             * Draw the red circle outline if the object is not a coin,
+             * Do not draw if the object is disappeared
+             */
             if (obj.isDisappeared) continue;
+            // Draw the circle id
+            cv::Point textPos(static_cast<int>(obj.center.x - 15), static_cast<int>(obj.center.y - 10));
+            cv::putText(frame, "ID:" + std::to_string(id), textPos, cv::FONT_HERSHEY_SIMPLEX,
+                        0.5, cv::Scalar(0, 255, 255), 2);
             if (!obj.isCoin) {
-                circle(frame, obj.center, obj.radius, Scalar(0, 0, 255), 2);
+                circle(frame, obj.center, (int) obj.radius, Scalar(0, 0, 255), 2);
                 circle(frame, obj.center, 2, Scalar(255, 0, 0), 3);
             } else {
                 // Draw the green circle outline if the object is a coin
-                circle(frame, obj.center, obj.radius, Scalar(0, 255, 0), 2);
+                circle(frame, obj.center, (int) obj.radius, Scalar(0, 255, 0), 2);
                 circle(frame, obj.center, 2, Scalar(0, 0, 255), 3);
             }
-            /*circle(frame, obj.center, obj.radius, Scalar(0, 255, 0), 2);
-            circle(frame, obj.center, 2, Scalar(0, 0, 255), 3);*/
 
             // Classify the coin and add text
             double diameterMM = 2.0 * obj.radius * gMmPerPixel;

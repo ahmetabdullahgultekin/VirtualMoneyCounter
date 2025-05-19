@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "coin_classifier.h"
+#include "info_windows.h"
 
 using namespace std;
 using namespace cv;
@@ -22,6 +23,7 @@ struct TrackedObject {
     double area;
     int firstSeen;
     int lastSeen;
+    int disappearedFrame = 0;
     bool isDisappeared = false; // true if the object is not seen for a while
     Scalar avgColor;  // BGR format
     bool isCoin = false; // true if the object is a coin
@@ -34,11 +36,19 @@ extern int frameIndex;
 extern int nextObjectId;
 extern map<int, Point2f> trackedObjects; // id -> last-known position
 
+// Coin Counters
+extern int realCoinCount;
+extern int fakeCoinCount;
+extern double totalRealCoinValue;
+extern double totalFakeCoinValue;
+
 float distance(Point2f a, Point2f b);
 
 map<int, Point2f> updateTracks(const vector<Point2f> &detectedCenters,
                                const vector<float> &radii,
                                const Mat &frame,
                                float maxDistance);
+
+void prepareSummary();
 
 #endif //VIRTUALMONEYCOUNTER_COIN_TRACKER_H

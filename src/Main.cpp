@@ -14,17 +14,7 @@
 
 #include "setup.h"
 
-/**
- * @brief Main function
- * @details
- * This is the main function of the program.
- * It calls the start to runProcess the coin detection process.
- * The program returns 0 if it executed successfully.
- *
- * @return int - Returns 0 if the program executed successfully.
- */
-int main() {
-    int result = runProcess();
+void checkResult(int result) {
     switch (result) {
         case 1:
             cerr << "Error: Unable to open video file." << endl;
@@ -41,6 +31,32 @@ int main() {
         default:
             cout << "Coin detection completed successfully." << endl;
     }
+}
+
+/**
+ * @brief Main function
+ * @details
+ * This is the main function of the program.
+ * It calls the start to runProcess the coin detection process.
+ * The program returns 0 if it executed successfully.
+ *
+ * @return int - Returns 0 if the program executed successfully.
+ */
+int main() {
+    // runProcess timing
+    vc_timer();
+
+    // Initialize the video capture
+    int result = runProcess();
+
+    // Check for errors in the video capture
+    checkResult(result);
+
+    // Show the results
+    prepareSummary();
+
+    // End the timer
+    vc_timer();
 
     return 0;
 }

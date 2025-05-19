@@ -9,7 +9,6 @@
 */
 VideoCapture cap(0);
 const int frameDelay = 1; // milliseconds
-int quitKeyVar = 0;
 const char quitKey = 'q';
 
 void vc_timer() {
@@ -32,6 +31,63 @@ void vc_timer() {
     }
 }
 
+std::string promptVideoFile(const std::string &dir) {
+    namespace fs = std::filesystem;
+    std::vector<std::string> files;
+    for (const auto &entry: fs::directory_iterator(dir)) {
+        if (entry.is_regular_file()) {
+            auto ext = entry.path().extension().string();
+            if (ext == ".mp4" || ext == ".avi" || ext == ".mov" || ext == ".mkv") {
+                files.push_back(entry.path().string());
+            }
+        }
+    }
+    if (files.empty()) {
+        std::cout << "No video files found in " << dir << std::endl;
+        return "";
+    }
+    std::cout << "\n========================================\n";
+    std::cout << "SELECT A VIDEO FILE\n";
+    std::cout << "========================================\n";
+    for (size_t i = 0; i < files.size(); ++i) {
+        std::cout << i << ": " << files[i] << std::endl;
+    }
+    size_t idx = 0;
+    std::cout << "\nENTER AN INDEX (0-" << files.size() - 1 << "): ";
+    std::cin >> idx;
+    if (idx >= files.size()) {
+        std::cout << "Invalid selection.\n";
+        return "";
+    }
+    return files[idx];
+}
+
+bool promptVideoOrCamera() {
+    std::cout << "\n========================================\n";
+    std::cout << "SELECT AN INPUT METHOD\n";
+    std::cout << "========================================\n";
+    std::cout << "0: CAMERA\n";
+    std::cout << "1: VIDEO FILE\n";
+    std::cout << "========================================\n";
+    std::cout << "ENTER YOUR CHOICE (0 or 1): ";
+    int choice = 0;
+    std::cin >> choice;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    if (choice == 0) {
+        return false; // Camera
+    } else if (choice == 1) {
+        std::string dir = VIDEO_FILE_DIR;
+        std::string videoFile = promptVideoFile(dir);
+        if (videoFile.empty()) {
+            return false;
+        }
+        return true; // Video file
+    } else {
+        std::cout << "Invalid choice. Please enter 0 or 1.\n";
+        return false;
+    }
+}
+
 /**
  * @brief Setup function
  * @details
@@ -46,35 +102,24 @@ void vc_timer() {
  *
  */
 bool setup(const string &videoFile) {
-    if (!cap.open(videoFile)) {
-        return false;
+    bool choice = promptVideoOrCamera();
+
+    if (choice) {
+        cap.open(videoFile); // Open the video file
+        if (!cap.isOpened()) {
+            std::cerr << "Error: Unable to open video file " << videoFile << std::endl;
+            return false;
+        }
+    } else {
+        cap.open(0); // Open the camera
+        if (!cap.isOpened()) {
+            std::cerr << "Error: Unable to open camera." << std::endl;
+            return false;
+        }
     }
     namedWindow("Coin Detection", WINDOW_AUTOSIZE);
-    vc_timer();                        // runProcess timing
     return true;
 }
-
-/*
-void onTrackbarChange(int, void *) {
-    // Callback function for trackbar changes (can be left empty)
-}
-
-void setupTrackbars() {
-    namedWindow("Parameters", WINDOW_AUTOSIZE);
-/*    createTrackbar("DP (x10)", "Parameters", &dp, 50, onTrackbarChange);
-    createTrackbar("Min Dist", "Parameters", &minDist, 200, onTrackbarChange);
-    createTrackbar("Param1", "Parameters", &param1, 200, onTrackbarChange);
-    createTrackbar("Param2", "Parameters", &param2, 200, onTrackbarChange);
-    createTrackbar("Min Radius", "Parameters", &minRadius, 200, onTrackbarChange);
-    createTrackbar("Max Radius", "Parameters", &maxRadius, 200, onTrackbarChange);/
-
-    // Trackbars for Thresholding parameters
-    createTrackbar("Threshold Value", "Parameters", &thresholdValue, 255, onTrackbarChange);
-    createTrackbar("Max Value", "Parameters", &thresholdMaxValue, 255, onTrackbarChange);
-    createTrackbar("Block Size", "Parameters", &thresholdBlockSize, 50, onTrackbarChange);
-    createTrackbar("Threshold C", "Parameters", &thresholdC, 50, onTrackbarChange);
-}
-*/
 
 /**
  * @brief Main function
@@ -92,12 +137,11 @@ int runProcess() {
         const string videoFile = VIDEO_FILE_PATH;
         if (!setup(videoFile)) return 1;
 
-        /*setupTrackbars();*/
-
         Mat frame, preproc;
         bool paused = false; // Pause state
+        double totalFrames = cap.get(CAP_PROP_FRAME_COUNT);
 
-        while (true) {
+        while (true/*totalFrames == 0 || frameIndex < totalFrames*/) {
             if (!paused) {
                 if (!cap.read(frame) || frame.empty()) break;
 
@@ -115,7 +159,7 @@ int runProcess() {
                     radii.emplace_back(c[2]);
                 }
 
-                trackedObjects = updateTracks(centers, radii, frame, 30.0f);
+                trackedObjects = updateTracks(centers, radii, frame, 150.0f);
 
                 if (!draw(frame, circles, frameIndex)) return 3;
 
@@ -127,10 +171,10 @@ int runProcess() {
             if (key == 'p') paused = !paused; // Toggle pause state
         }
 
-        vc_timer();
         destroyWindow("Coin Detection");
-        cap.release();
         destroyAllWindows();
+        cap.release();
+
     }
     catch (const exception &e) {
         return 4;
