@@ -31,7 +31,7 @@ int minDist = minRadius * 2; // Minimum distance between detected centers
 }*/
 vector<Vec3f> detectCoins(const Mat &preproc) {
     vector<Vec3f> circles;
-    // 1) Find all external contours
+    // Find all external contours
     vector<vector<Point>> contours;
     findContours(preproc, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
 

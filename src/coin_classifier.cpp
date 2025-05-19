@@ -31,7 +31,7 @@ double classifyEuroCoin(double dMM) {
 
 Scalar getAverageColor(const Mat &image, Point2f center, float radius) {
     Mat mask = Mat::zeros(image.size(), CV_8UC1);
-    circle(mask, center, (int) radius, 255, -1);  // filled circle as mask
+    circle(mask, center, (int) radius, 255, -1);  // filled circle as a mask
 
     Scalar meanColor = mean(image, mask);
     return meanColor;  // returns Scalar(B, G, R)
@@ -42,7 +42,7 @@ bool isCoinColor(const Scalar &color) {
     double g = color[1];
     double b = color[2];
 
-    return (r >= 25 && r <= 95) &&
-           (g >= 40 && g <= 120) &&
-           (b >= 55 && b <= 125);
+    return (r >= 29 && r <= 92) &&
+           (g >= 44 && g <= 116) &&
+           (b >= 59 && b <= 125);
 }

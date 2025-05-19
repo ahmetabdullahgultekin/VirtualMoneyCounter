@@ -80,7 +80,7 @@ void vc_timer();
  * @param videoFile - The path to the video file to be processed.
  * @return bool - Returns true if the setup was successful, otherwise false.
  */
-bool setup(const std::string &videoFile);
+bool setup();
 
 /**
  * @brief Main function

@@ -62,7 +62,7 @@ std::string promptVideoFile(const std::string &dir) {
     return files[idx];
 }
 
-bool promptVideoOrCamera() {
+bool promptVideoOrCamera(string *pString) {
     std::cout << "\n========================================\n";
     std::cout << "SELECT AN INPUT METHOD\n";
     std::cout << "========================================\n";
@@ -81,6 +81,7 @@ bool promptVideoOrCamera() {
         if (videoFile.empty()) {
             return false;
         }
+        *pString = videoFile;
         return true; // Video file
     } else {
         std::cout << "Invalid choice. Please enter 0 or 1.\n";
@@ -101,8 +102,9 @@ bool promptVideoOrCamera() {
  * @return bool - Returns true if the setup was successful, otherwise false.
  *
  */
-bool setup(const string &videoFile) {
-    bool choice = promptVideoOrCamera();
+bool setup() {
+    string videoFile = VIDEO_FILE_PATH;
+    bool choice = promptVideoOrCamera(&videoFile);
 
     if (choice) {
         cap.open(videoFile); // Open the video file
@@ -134,8 +136,8 @@ bool setup(const string &videoFile) {
  */
 int runProcess() {
     try {
-        const string videoFile = VIDEO_FILE_PATH;
-        if (!setup(videoFile)) return 1;
+        //const string videoFile = VIDEO_FILE_PATH;
+        if (!setup()) return 1;
 
         Mat frame, preproc;
         bool paused = false; // Pause state
@@ -159,7 +161,7 @@ int runProcess() {
                     radii.emplace_back(c[2]);
                 }
 
-                trackedObjects = updateTracks(centers, radii, frame, 150.0f);
+                trackedObjects = updateTracks(centers, radii, frame, 100.0f);
 
                 if (!draw(frame, circles, frameIndex)) return 3;
 

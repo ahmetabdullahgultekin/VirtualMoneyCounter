@@ -27,22 +27,13 @@ map<int, Point2f> updateTracks(const vector<Point2f> &detectedCenters,
         float minDistance = maxDistance;
         int bestIndex = -1;
 
-        // Debuger
-        cout << "ID: " << id << ", Previous Center: (" << prevCenter.x << ", " << prevCenter.y << ")" << endl;
-
         // Check if the object is still in the frame
         for (int i = 0; i < detectedCenters.size(); ++i) {
             if (matched[i]) continue;
             float dist = distance(prevCenter, detectedCenters[i]);
-            // Debuger
-            cout << "ID: " << id << ", Distance: " << dist << endl;
             if (dist < minDistance) {
                 minDistance = dist;
                 bestIndex = i;
-                // Debuger
-                cout << "ID: " << id << ", Best Index: " << bestIndex
-                     << ", Min Distance: " << minDistance
-                     << ", Radius: " << radii[i] << endl;
             }
         }
 
@@ -58,14 +49,9 @@ map<int, Point2f> updateTracks(const vector<Point2f> &detectedCenters,
             // The Object has not disappeared yet
             objectInfo[id].isDisappeared = false;
             objectInfo[id].disappearedFrame = 0; // Reset the disappeared frame count
-            // Update the average color by calculating the average color with the previous average color
-            //objectInfo[id].avgColor = 0.5 * (objectInfo[id].avgColor + 2.0 * getAverageColor(frame, newCenter, radii[bestIndex])); // average color in BGR
-            // Update diameter by calculating the average diameter with the previous diameter
             objectInfo[id].diameterMM =
                     0.5 * (objectInfo[id].diameterMM + 2.0 * radii[bestIndex] * gMmPerPixel); // diameter in mm
             objectInfo[id].value = classifyEuroCoin(objectInfo[id].diameterMM); // Get the value of the coin
-            // Update the radius by calculating the average radius with the previous radius
-            //objectInfo[id].radius = 0.5 * (objectInfo[id].radius + 2.0 * radii[bestIndex]); // radius in pixels
             objectInfo[id].isCoin = isCoinColor(objectInfo[id].avgColor);
         }
             // If no match is found, mark the object as disappeared
@@ -75,9 +61,6 @@ map<int, Point2f> updateTracks(const vector<Point2f> &detectedCenters,
             if (objectInfo[id].disappearedFrame > 5) { // If the object has disappeared for more than 30 frames
                 objectInfo[id].isDisappeared = true;
                 objectInfo[id].disappearedFrame = 0; // Reset the disappeared frame count
-            } else {
-                //objectInfo[id].isDisappeared = false; // The object has not disappeared yet
-                //return updatedPositions;
             }
         }
     }
@@ -86,6 +69,16 @@ map<int, Point2f> updateTracks(const vector<Point2f> &detectedCenters,
     // Add new objects
     for (int i = 0; i < detectedCenters.size(); ++i) {
         if (!matched[i]) {
+            // Check if the detected center is too close to any existing tracked object
+            bool tooClose = false;
+            for (const auto &[id, prevCenter]: trackedObjects) {
+                if (distance(prevCenter, detectedCenters[i]) < maxDistance) {
+                    tooClose = true;
+                    break;
+                }
+            }
+            if (tooClose) continue; // Skip this detected center
+            // Create a new tracked object
             int id = nextObjectId++;
             Point2f center = detectedCenters[i];
             float radius = radii[i];
